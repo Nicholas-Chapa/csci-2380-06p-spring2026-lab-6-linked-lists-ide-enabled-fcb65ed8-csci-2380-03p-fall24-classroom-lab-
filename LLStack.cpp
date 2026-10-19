@@ -6,7 +6,8 @@
 	// so be sure that the "next" Node is linked to a nullptr
 Node::Node(string s) 
 {
-
+	data = s;
+	next = nullptr;
 }
 
 //constructor : initiazlize the head and tail field from LLStack class 
@@ -14,7 +15,9 @@ Node::Node(string s)
 	// the head and tail should both be initialized as null pointers
 LLStack::LLStack()
 {
-
+	head = nullptr;
+	tail = nullptr;
+	count = 0;
 }
 
 /*
@@ -24,7 +27,10 @@ LLStack::LLStack()
 */
 string LLStack::top()
 {
-	return "fixthis";
+	if (head == nullptr) {
+		return "";
+	}
+	return head->data;
 }
 
 /*
@@ -32,7 +38,7 @@ string LLStack::top()
 */
 int LLStack::size()
 {
-	return -1;
+	return count;
 }
 
 /*
@@ -45,7 +51,15 @@ int LLStack::size()
 */
 void LLStack::push(string s)
 {
-
+	Node* node = new Node(s);
+	if (head == nullptr) {
+		head = node;
+		tail = node;
+	} else {
+		node->next = head;
+		head = node;
+	}
+	++count;
 }
 
 /*
@@ -57,7 +71,17 @@ void LLStack::push(string s)
 */
 void LLStack::pop()
 {
+	if (head == nullptr) {
+		return;
+	}
 
+	Node* oldHead = head;
+	head = head->next;
+	delete oldHead;
+	--count;
+	if (head == nullptr) {
+		tail = nullptr;
+	}
 }
 
 /*
@@ -82,6 +106,34 @@ void LLStack::pop()
 */
 int LLStack::removeAll(const string& target) 
 {
-	return -1;
+	int removed = 0;
+	Node* previous = nullptr;
+	Node* current = head;
+
+	while (current != nullptr) {
+		if (current->data == target) {
+			Node* next = current->next;
+			if (previous == nullptr) {
+				head = next;
+			} else {
+				previous->next = next;
+			}
+			if (current == tail) {
+				tail = previous;
+			}
+			delete current;
+			current = next;
+			--count;
+			++removed;
+		} else {
+			previous = current;
+			current = current->next;
+		}
+	}
+
+	if (head == nullptr) {
+		tail = nullptr;
+	}
+	return removed;
 }
 
